@@ -16,7 +16,7 @@ class CourseHeader
     #[ORM\Column(type: 'string', length: 255)]
     private $CourseName;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: 'string', length: 255)]
     private $CourseDuration;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -27,6 +27,9 @@ class CourseHeader
 
     #[ORM\Column(type: 'boolean')]
     private $IsActive;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $CourseCode;
 
     public function getId(): ?int
     {
@@ -45,12 +48,12 @@ class CourseHeader
         return $this;
     }
 
-    public function getCourseDuration(): ?\DateTimeInterface
+    public function getCourseDuration(): ?string
     {
         return $this->CourseDuration;
     }
 
-    public function setCourseDuration(\DateTimeInterface $CourseDuration): self
+    public function setCourseDuration( $CourseDuration): self
     {
         $this->CourseDuration = $CourseDuration;
 
@@ -89,6 +92,18 @@ class CourseHeader
     public function setIsActive(bool $IsActive): self
     {
         $this->IsActive = $IsActive;
+
+        return $this;
+    }
+
+    public function getCourseCode(): ?string
+    {
+        return $this->CourseCode;
+    }
+
+    public function setCourseCode(string $CourseCode): self
+    {
+        $this->CourseCode = $CourseCode;
 
         return $this;
     }

@@ -18,40 +18,46 @@ class MshuleUser implements UserInterface, PasswordAuthenticatedUserInterface
     private $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
-    private $username;
+    private ?string $username;
 
     #[ORM\Column(type: 'json',nullable: true)]
-    private $roles = [];
+    private array $roles = [];
 
     #[ORM\Column(type: 'string')]
-    private $password;
+    private string $password;
 
     #[ORM\Column(type: 'string', length: 22)]
-    private $FirstName;
+    private ?string $FirstName;
 
     #[ORM\Column(type: 'string', length: 22, nullable: true)]
-    private $MiddleName;
+    private ?string $MiddleName;
 
     #[ORM\Column(type: 'string', length: 22, nullable: true)]
-    private $LastName;
+    private ?string $LastName;
 
-    #[ORM\Column(type: 'string', length: 122)]
-    private $EmployeeNumber;
+    #[ORM\Column(type: 'string', length: 122, nullable: true)]
+    private ?string $EmployeeNumber;
 
-    #[ORM\Column(type: 'string', length: 4)]
-    private $Salutation;
+    #[ORM\Column(type: 'string', length: 4, nullable: true)]
+    private ?string $Salutation;
 
     #[ORM\Column(type: 'boolean', nullable: true)]
-    private $IsEmployee;
+    private ?bool $IsEmployee;
 
-    #[ORM\Column(type: 'string', length: 100)]
-    private $Designation;
+    #[ORM\Column(type: 'string', length: 100, nullable: true)]
+    private ?string $Designation;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $Email;
+    private ?string $Email;
 
     #[ORM\Column(type: 'boolean')]
-    private $isVerified = false;
+    private bool $isVerified = false;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true,)]
+    private ?string $StudentId;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $ClassId;
 
     public function getId(): ?int
     {
@@ -227,6 +233,30 @@ class MshuleUser implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getStudentId(): ?string
+    {
+        return $this->StudentId;
+    }
+
+    public function setStudentId(?string $StudentId): self
+    {
+        $this->StudentId = $StudentId;
+
+        return $this;
+    }
+
+    public function getClassId(): ?string
+    {
+        return $this->ClassId;
+    }
+
+    public function setClassId(?string $ClassId): self
+    {
+        $this->ClassId = $ClassId;
 
         return $this;
     }

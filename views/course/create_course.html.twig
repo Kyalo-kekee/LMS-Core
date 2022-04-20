@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+{% block page_level_css %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('theme/assets/css/widgets/modules-widgets.css') }}">
+{% endblock %}
+{% block title %}Hello CourseController!{% endblock %}
+{% block page_title %}Create Course{% endblock %}
+
+{% block body %}
+<div class="row layout-top-spacing">
+    <div class="col-1"></div>
+    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 col-12 layout-spacing">
+        <div class="widget widget-card-two">
+            <div class="widget-content">
+
+                <div class="media">
+                    <div class="w-img">
+                        <img src="{{ asset('enterprise/open-book.png') }}" alt="avatar">
+                    </div>
+                    <div class="media-body">
+                        <h6>Create a course</h6>
+                    </div>
+                </div>
+
+                <div class="card-bottom-section">
+                    <h5>Course Information</h5>
+                    {{ form_start(courseForm) }}
+                    <div class="form-row ">
+                        <div class="form-group col-md-4">
+                            {{ form_label(courseForm.CourseName,"Course/Unit Name") }}
+                            {{ form_row(courseForm.CourseName) }}
+                        </div>
+                        <div class="form-group col-md-4">
+                            {{ form_label(courseForm.CourseDuration,"Duration") }}
+                            {{ form_row(courseForm.CourseDuration) }}
+                        </div>
+                        <div class="form-group col-md-4">
+                            {{ form_label(courseForm.CourserTutor,"Tutor Name") }}
+                            {{ form_row(courseForm.CourserTutor) }}
+                        </div>
+                    </div>
+                    <div class="form-row ">
+                        <div class="form-group col-md-4">
+                            {{ form_label(courseForm.ClassId,"Class Code") }}
+                            {{ form_row(courseForm.ClassId) }}
+                        </div>
+                        <div class="form-group col-md-4">
+                            {{ form_label(courseForm.CourseCode,"Course Code") }}
+                            {{ form_row(courseForm.CourseCode) }}
+                        </div>
+                        <div class="form-group col-md-4">
+                            {{ form_label(courseForm.IsActive,"Publish") }}
+                            {{ form_row(courseForm.IsActive) }}
+                        </div>
+
+                    </div>
+                    <div class="form-row p-4">
+                        <button class="btn btn-sm bg-primary">Submit</button>
+                    </div>
+                    {{ form_row(courseForm._token) }}
+                    {{ form_end(courseForm,{'render_rest':false}) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block page_level_script %}
+<script src="{{ asset('theme/assets/js/widgets/modules-widgets.js') }}"></script>
+{% endblock %}

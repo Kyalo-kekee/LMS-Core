@@ -2,7 +2,9 @@
 
 namespace App\Form;
 
+use App\Entity\LmsUserRoles;
 use App\Entity\MshuleUser;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -50,6 +52,23 @@ class RegistrationFormType extends AbstractType
             ])
             ->add('IsEmployee',CheckboxType::class,[
                 'attr' =>[ 'class' => '']
+            ])
+            ->add('Roles',EntityType::class, array(
+                'label'=>'User Role',
+                'class' => LmsUserRoles::class,
+                'choice_label' => 'nameRole',
+                'multiple' => true,
+                'expanded' => true,
+                'choice_value' => 'nameRole',
+                'attr'=>['class'=> 'p-2']
+            ))
+            ->add('StudentId',null,[
+                'attr' =>[ 'class' => 'form-control-sm'],
+                'label' =>false
+            ])
+            ->add('ClassId',null,[
+                'attr' =>[ 'class' => 'form-control-sm'],
+                'label' =>false
             ])
             ->add('plainPassword', PasswordType::class, [
                 // instead of being set onto the object directly,

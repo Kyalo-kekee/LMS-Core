@@ -11,6 +11,7 @@ use App\Repository\CourseHeaderRepository;
 use Container4db5V3Z\getUniqidNamerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -36,13 +37,18 @@ class CourseController extends AbstractController
             /*todo:check if classId exists if not return error*/
             $course ->setClassId($form->get('ClassId')->getData());
             $course ->setCourseDuration($form->get('CourseDuration')->getData());
-            $course->setCourseName($form->get('CourserName')->getData());
+            $course->setCourseName($form->get('CourseName')->getData());
             $course->setCourserTutor($form->get('CourserTutor')->getData());
             $course->setIsActive($form->get('IsActive')->getData());
+            $course ->setCourseCode($form->get('CourseCode')->getData());
 
             try{
+
                 $entityManager ->persist($course);
                 $entityManager->flush();
+                $course_id = $course->getId();
+
+                return  new RedirectResponse($this->generateUrl('app_populate_course',['courseId'=>$course_id]));
             }catch (\Exception $e){
                 $this->addFlash('fail',$e->getMessage());
             }
@@ -50,16 +56,18 @@ class CourseController extends AbstractController
         }
         return $this->render('course/create_course.html.twig', [
             'controller_name' => 'CourseController',
+            'courseForm' => $form->createView()
         ]);
     }
 
-    #[Route('/course-module-populate/{courseId}', 'app_populate_course')]
+    #[Route('/course-module-populate/{courseId}', name: 'app_populate_course')]
     public function addCourseModule(
         Request $request,
         EntityManagerInterface $entityManager,
         string $courseId
     ): Response
     {
+        $this->addFlash('info','Add course module, you can add as many as you want');
         $course_module = new CourseHeaderDetails();
         $form = $this->createForm(CourseModuleFormType::class,$course_module);
         $form ->handleRequest($request);
@@ -114,7 +122,8 @@ class CourseController extends AbstractController
             ]),
             default => $this->render('course/course_header_protected.html.twig', [
                 'controller_name' => 'CourseController',
-
+                'courseHeaderDetail' =>$course_details_query,
+                'courseHeader' =>$course
             ]),
         };
     }

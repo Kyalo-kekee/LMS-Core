@@ -4,9 +4,13 @@ namespace App\Entity;
 
 use App\Repository\StudentAssignmentHeaderRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: StudentAssignmentHeaderRepository::class)]
-class StudentAssignmentHeader
+#[Vich\Uploadable]
+class
+StudentAssignmentHeader
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -16,20 +20,27 @@ class StudentAssignmentHeader
     #[ORM\Column(type: 'string', length: 255)]
     private $ModuleId;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private $StudentScore;
-
     #[ORM\Column(type: 'text', nullable: true)]
-    private $Content;
+    private ?string $Content;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $Attachment;
+    private ?string $Attachment;
 
     #[ORM\Column(type: 'datetime')]
-    private $SubmitDate;
+    private ?\DateTimeInterface $SubmitDate;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $StudentId;
+    private ?string $StudentId;
+
+    #[Vich\UploadableField(mapping: 'assignment_files',fileNameProperty: 'Attachment', size: 'AttachmentSize')]
+    private ?File $AttachmentFile = null;
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeImmutable $UpdatedAt;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $AttachmentSize;
+
 
     public function getId(): ?int
     {
@@ -40,6 +51,15 @@ class StudentAssignmentHeader
     {
         return $this->ModuleId;
     }
+    public  function setAttachmentFile(?File $file = null):void
+    {
+        $this ->Attachment = $file;
+        if(null !== $file){
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this ->UpdatedAt = new \DateTimeImmutable();
+        }
+    }
 
     public function setModuleId(string $ModuleId): self
     {
@@ -48,17 +68,6 @@ class StudentAssignmentHeader
         return $this;
     }
 
-    public function getStudentScore(): ?int
-    {
-        return $this->StudentScore;
-    }
-
-    public function setStudentScore(?int $StudentScore): self
-    {
-        $this->StudentScore = $StudentScore;
-
-        return $this;
-    }
 
     public function getContent(): ?string
     {
@@ -107,4 +116,29 @@ class StudentAssignmentHeader
 
         return $this;
     }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->UpdatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $UpdatedAt): self
+    {
+        $this->UpdatedAt = $UpdatedAt;
+
+        return $this;
+    }
+
+    public function getAttachmentSize(): ?int
+    {
+        return $this->AttachmentSize;
+    }
+
+    public function setAttachmentSize(?int $AttachmentSize): self
+    {
+        $this->AttachmentSize = $AttachmentSize;
+
+        return $this;
+    }
+
 }

@@ -2,27 +2,26 @@
 
 namespace App\Form;
 
-use App\Entity\CourseHeaderDetails;
+use App\Entity\AssignmentHeader;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\File;
 use Vich\UploaderBundle\Form\Type\VichFileType;
-use Vich\UploaderBundle\Form\Type\VichImageType;
 
-class CourseModuleFormType extends AbstractType
+class AssignmentFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('CourseId')
-            ->add('ModuleName')
-            ->add('ModuleDescription')
-            ->add('ModuleContent')
-            ->add('ModuleDuration')
+            ->add('AssignmentName')
+            ->add('ModuleId')
+            ->add('Content')
+            ->add('SubmitBefore')
+            ->add('UpdatedAt')
+            ->add('ClassId')
             ->add(
 
-                'ModuleAttachment',
+                'AttachmentFile',
                 VichFileType::class,
                 [
                     'label' => 'Course Material (PDF file)',
@@ -40,7 +39,7 @@ class CourseModuleFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => CourseHeaderDetails::class,
+            'data_class' => AssignmentHeader::class,
         ]);
     }
 }

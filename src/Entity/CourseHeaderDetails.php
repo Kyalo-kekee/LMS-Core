@@ -7,8 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-#[ORM\Entity(repositoryClass: CourseHeaderDetailsRepository::class)]
 #[Vich\Uploadable]
+#[ORM\Entity(repositoryClass: CourseHeaderDetailsRepository::class)]
 class CourseHeaderDetails
 {
     #[ORM\Id]
@@ -34,8 +34,8 @@ class CourseHeaderDetails
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $ModuleAttachment;
 
-    #[Vich\UploadableField(mapping: 'course_modules',fileNameProperty: 'ModuleAttachment', size: 'AttachmentSize')]
-    private ?File $AttachmentFile = null;
+    #[Vich\UploadableField(mapping: "course",fileNameProperty: 'ModuleAttachment', size: 'AttachmentSize')]
+    private  $AttachmentFile;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $AttachmentSize;
@@ -50,7 +50,7 @@ class CourseHeaderDetails
 
     public  function setAttachmentFile(?File $file = null):void
     {
-        $this ->ModuleAttachment = $file;
+        $this ->AttachmentFile = $file;
         if(null !== $file){
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost

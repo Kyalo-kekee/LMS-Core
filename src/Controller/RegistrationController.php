@@ -29,31 +29,52 @@ class RegistrationController extends AbstractController
         $this->emailVerifier = $emailVerifier;
     }
 
-    #[Route('/register', name: 'app_register')]
+    #[Route('/register/{client}', name: 'app_register')]
     public function register(
         Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
         UserAuthenticatorInterface $userAuthenticator,
         UserServerAuthenticator $authenticator,
-        EntityManagerInterface $entityManager, LmsUserRolesRepository $lmsUserRolesRepository): Response
+        EntityManagerInterface $entityManager,
+        LmsUserRolesRepository $lmsUserRolesRepository,
+        $client
+    ): Response
     {
         $user = new MshuleUser();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setDesignation($form->get('Designation')->getData());
+
+
             $user->setSalutation($form->get('Salutation')->getData());
             $user->setFirstName($form->get('FirstName')->getData());
+            if($client === 'ROLE_STUDENT')
+            {
+                $user ->setClassId($form->get('ClassId')->getData());
+                $user ->setStudentId($form->get('StudentId')->getData());
+            }
+            if($client === 'ROLE_LECTURE')
+            {
+                $user->setDesignation($form->get('Designation')->getData());
+                $user->setEmployeeNumber($form->get('EmployeeNumber')->getData());
+                $user->setIsEmployee($form->get('IsEmployee')->getData());
+            }
             $user->setEmail($form->get('Email')->getData());
-            $user->setEmployeeNumber($form->get('EmployeeNumber')->getData());
             $user->setIsVerified($form->get('IsVerified')->getData());
-            $user->setIsEmployee($form->get('IsEmployee')->getData());
+            $roles = $form->get('Roles')->getData();
+            $userRoles = [];
+            foreach ($roles as $role =>$entity)
+            {
+                $userRoles[] = $entity->getNameRole();
+            }
+            $user->setRoles($userRoles);
             $user->setPassword(
             $userPasswordHasher->hashPassword(
                     $user,
                     $form->get('plainPassword')->getData()
                 )
             );
+
             $entityManager->persist($user);
             $entityManager->flush();
             // generate a signed url and email it to the user
@@ -70,7 +91,8 @@ class RegistrationController extends AbstractController
         $userRoles = $lmsUserRolesRepository ->findAll();
         return $this->render('registration/user_registration.html.twig', [
             'registrationForm' => $form->createView(),
-            'roles' =>$userRoles
+            'roles' =>$userRoles,
+            'client'=> $client
         ]);
     }
 

@@ -25,10 +25,10 @@ class ClassHeaderType extends AbstractType
                 'label'=>false,
                 'attr'=>['class'=>'form-control']
             ])
-            ->add('HasStreams',CheckboxType::class,[
+  /*          ->add('HasStreams',CheckboxType::class,[
 
                 'attr'=>['class'=>'pl-2']
-            ])
+            ])*/
             ->add('ClassTeacher',null,[
                 'label'=>false,
                 'attr'=>['class'=>'form-control']

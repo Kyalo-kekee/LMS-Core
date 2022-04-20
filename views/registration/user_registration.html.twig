@@ -1,9 +1,13 @@
 {% extends 'base.html.twig' %}
-{% block title %} Employee Registration {% endblock %}
-{% block page_title %} Employee Registration{% endblock %}
+{% block title %} System Registration {% endblock %}
+{% block page_title %} User Registration{% endblock %}
 {% block body %}
 
-    <div class="row">
+
+    <div class="row layout-top-spacing">
+        {% for flash_error in app.flashes('verify_email_error') %}
+            <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+        {% endfor %}
         <div class="col-lg-2"></div>
         <div id="flFormsGrid" class="col-lg-8 layout-spacing">
             <div class="statbox widget box box-shadow">
@@ -11,6 +15,7 @@
                     <div class="row">
                         <div class="col-xl-12 col-md-12 col-sm-12 col-12">
                             <h4>Enter Registration Details Bellow</h4>
+                            {{ include('feedback_flash_messages.html.twig') }}
                         </div>
                     </div>
                 </div>
@@ -49,26 +54,54 @@
                                 {{ form_label(registrationForm.Salutation,"Salutation") }}
                                 {{ form_row(registrationForm.Salutation) }}
                             </div>
-                            <div class="form-group mb-4 col-md-4">
-                                {{ form_label(registrationForm.Designation,"Designation") }}
-                                {{ form_row(registrationForm.Designation) }}
-                            </div>
-                        </div>
-                        <div class="form-row mb-4">
-                            <div class="form-group mb-4 col-md-4">
-                                {{ form_label(registrationForm.EmployeeNumber,"EmployeeNumber") }}
-                                {{ form_row(registrationForm.EmployeeNumber) }}
-                            </div>
-                        </div>
 
+                        </div>
+                        {% if client == 'ROLE_STUDENT' %}
+                            <div class="form-row mb-4">
+                                <div class="form-group mb-2 col-md-4">
+                                    {{ form_label(registrationForm.StudentId,"REG NO.") }}
+                                    {{ form_row(registrationForm.StudentId) }}
+                                </div>
+                                <div class="form-group mb-4 col-md-4">
+                                    {{ form_label(registrationForm.ClassId,"Class Code") }}
+                                    {{ form_row(registrationForm.ClassId) }}
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if client == 'ROLE_LECTURER' %}
+                          <div class="card" style="border:1px solid #ffe8a1">
+                            <div class="form-row mb-4"  style="border:1px solid #ffe8a1">
+                                <div class="form-group mb-4 col-md-4">
+                                    {{ form_label(registrationForm.EmployeeNumber,"EmployeeNumber") }}
+                                    {{ form_row(registrationForm.EmployeeNumber) }}
+                                </div>
+                                <div class="form-group mb-4 col-md-4">
+                                    {{ form_label(registrationForm.Designation,"Designation") }}
+                                    {{ form_row(registrationForm.Designation) }}
+                                    {{ form_row(registrationForm.IsEmployee) }}
+                                </div>
+                            </div>
+                          </div>
+                        {% endif %}
                         <div class="form-row mb-4">
                             <div class="form-group col-md-4">
-                                {{ form_row(registrationForm.IsEmployee) }}
+
                                 {{ form_row(registrationForm.IsVerified) }}
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary mt-3">Sign in</button>
-                    {{ form_end(registrationForm) }}
+                        <div class="row card  bg-grey ">
+                           <div class="card-header">
+                               <span class="badge badge-danger"> Security Alert: <small>ensure the most appropriate role
+                                       is selected for a user</small> </span>
+                           </div>
+                            <div class="form-group">
+
+                                {{ form_row(registrationForm.Roles) }}
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3">Register</button>
+                    {{ form_row(registrationForm._token) }}
+                    {{ form_end(registrationForm,{'render_rest':false}) }}
                 </div>
             </div>
         </div>

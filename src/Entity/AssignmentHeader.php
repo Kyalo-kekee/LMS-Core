@@ -40,6 +40,9 @@ class AssignmentHeader
     #[Vich\UploadableField(mapping: 'assignment_files',fileNameProperty: 'Attachment', size: 'AttachmentSize')]
     private ?File $AttachmentFile = null;
 
+    #[ORM\Column(type: 'string', length: 255)]
+    private $ClassId;
+
 
     public function getId(): ?int
     {
@@ -136,6 +139,18 @@ class AssignmentHeader
     public function setUpdatedAt(?\DateTimeImmutable $UpdatedAt): self
     {
         $this->UpdatedAt = $UpdatedAt;
+
+        return $this;
+    }
+
+    public function getClassId(): ?string
+    {
+        return $this->ClassId;
+    }
+
+    public function setClassId(string $ClassId): self
+    {
+        $this->ClassId = $ClassId;
 
         return $this;
     }

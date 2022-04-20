@@ -7,7 +7,10 @@ use App\Entity\ClassHeaderDetails;
 use App\Form\ClassHeaderType;
 use App\Repository\ClassHeaderRepository;
 use App\Repository\InstitutionSetupRepository;
+use App\Repository\MshuleUserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query\Parameter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,7 +29,7 @@ class InstitutionSetupController extends AbstractController
     }
 
     #[Route('/school-setup/add-class',name: 'app_add_class')]
-    public function createSchoolClass(Request $request, EntityManagerInterface $entityManager)
+    public function createSchoolClass(Request $request, EntityManagerInterface $entityManager): Response
     {
         $classModel = new ClassHeader();
         $classModelDetail = new ClassHeaderDetails();
@@ -36,20 +39,17 @@ class InstitutionSetupController extends AbstractController
             $classModel->setClassName($form->get('ClassName')->getData());
             $classModel->setMaximumStudentCapacity($form->get('MaximumStudentCapacity')->getData());
             $classModel->setMinimumStudentCapacity($form->get('MinimumStudentCapacity')->getData());
-            $classModel->setHasStreams($form->get('HasStreams')->getData());
+           // $classModel->setHasStreams($form->get('HasStreams')->getData());
 
             try {
                 $entityManager->persist($classModel);
                 $entityManager->flush();
-
-
-
             /*
              * add class sections/streams
              * Get ID of the class to add a stream
              * */
 
-            $classId = $classModel ->getId();
+          /*  $classId = $classModel ->getId();
 
             $classModelDetail ->setClassID($classId);
             $classModelDetail->setSectionID($form->get('SectionID')->getData());
@@ -57,13 +57,12 @@ class InstitutionSetupController extends AbstractController
             $classModelDetail ->setMinStudents($form->get('MinStudents')->getData());
             //$classModelDetail ->setClassPrefect($form->get('ClassPrefect')->getData());
             $entityManager->persist($classModelDetail);
-            $entityManager->flush();
+            $entityManager->flush();*/
             $this->addFlash('success','Class Added successfully');
             }catch (\Exception $e)
             {
                 $this->addFlash("fail",$e->getMessage());
             }
-
         }
         return $this ->render('institution_setup/add_class_information.html.twig',[
             'classForm' =>$form ->createView()
@@ -79,10 +78,21 @@ class InstitutionSetupController extends AbstractController
     }
 
     #[Route('/class-header-details/{mode}/{id}',name: 'app_class_header_details')]
-    public function classHeaderDetails(ClassHeaderRepository $repository,$mode ='detail',$id=null): Response
+    public function classHeaderDetails(
+        ClassHeaderRepository $repository,
+        MshuleUserRepository $userRepository,
+        $id=null,$mode='detail'): Response
     {
+        $class = $repository -> find($id);
+        $class_users_query = $userRepository ->createQueryBuilder('USER')
+            ->where('USER.ClassId = :classId')->setParameters(new ArrayCollection(array(
+            new Parameter('classId', $class->getClassName())
+        )))->getQuery();
+
+        $user = $class_users_query ->getResult();
         return $this ->render('institution_setup/class_header_details.html.twig',[
-            'classHeader' =>$repository -> find($id)
+            'classHeader' =>$class,
+            'students' => $user
         ]);
     }
 }

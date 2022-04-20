@@ -14,24 +14,24 @@ class LmsUserRoles
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $RoleName;
+    private ?string $nameRole;
 
     #[ORM\Column(type: 'boolean')]
-    private $IsEnabled;
+    private ?bool $IsEnabled;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getRoleName(): ?string
+    public function getNameRole(): ?string
     {
-        return $this->RoleName;
+        return $this->nameRole;
     }
 
-    public function setRoleName(string $RoleName): self
+    public function setNameRole(string $nameRole): self
     {
-        $this->RoleName = $RoleName;
+        $this->nameRole = $nameRole;
 
         return $this;
     }

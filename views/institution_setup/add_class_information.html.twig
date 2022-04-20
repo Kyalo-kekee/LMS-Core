@@ -15,6 +15,7 @@
                     <div class="row">
                         <div class="col-xl-12 col-md-12 col-sm-12 col-12">
                             <h4>Enter Class Details</h4>
+                            {{ include('feedback_flash_messages.html.twig') }}
                         </div>
                     </div>
                 </div>
@@ -67,14 +68,14 @@
                                 </div>
                             </div>
                             <div class="form-row ">
-                                <div class="form-group col-md-4">
+                                {#<div class="form-group col-md-4">
                                     {{ form_row(classForm.HasStreams) }}
-                                </div>
+                                </div>#}
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="border-top-profile" role="tabpanel"
+                        <div class="tab-pane fade" id="border-top-profileX" role="tabpanel"
                              aria-labelledby="border-top-profile-tab">
-                            <div class="form-row ">
+                    {#        <div class="form-row ">
                                 <div class="form-group col-md-4">
                                     {{ form_label(classForm.SectionID,"Stream/Section Name") }}
                                     {{ form_row(classForm.SectionID) }}
@@ -91,7 +92,7 @@
                                     {{ form_label(classForm.MinStudents,"Min Student") }}
                                     {{ form_row(classForm.MinStudents) }}
                                 </div>
-                            </div>
+                            </div>#}
                         </div>
                         <button type="submit" class="btn btn-primary">Add Class</button>
                     </div>
