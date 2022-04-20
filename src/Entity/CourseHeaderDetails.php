@@ -4,8 +4,11 @@ namespace App\Entity;
 
 use App\Repository\CourseHeaderDetailsRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: CourseHeaderDetailsRepository::class)]
+#[Vich\Uploadable]
 class CourseHeaderDetails
 {
     #[ORM\Id]
@@ -13,26 +16,47 @@ class CourseHeaderDetails
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'integer')]
-    private $CourseId;
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?int $CourseId;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $ModuleName;
+    private ?string $ModuleName;
 
     #[ORM\Column(type: 'text')]
-    private $ModuleDecription;
+    private ?string $ModuleDescription;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $ModuleContent;
+    private ?string $ModuleContent;
 
     #[ORM\Column(type: 'datetime')]
-    private $ModuleDuration;
+    private ?\DateTimeInterface $ModuleDuration;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $ModuleAttachment;
+
+    #[Vich\UploadableField(mapping: 'course_modules',fileNameProperty: 'ModuleAttachment', size: 'AttachmentSize')]
+    private ?File $AttachmentFile = null;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $AttachmentSize;
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeImmutable $UpdatedAt;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    public  function setAttachmentFile(?File $file = null):void
+    {
+        $this ->ModuleAttachment = $file;
+        if(null !== $file){
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this ->UpdatedAt = new \DateTimeImmutable();
+        }
+    }
     public function getCourseId(): ?int
     {
         return $this->CourseId;
@@ -57,14 +81,14 @@ class CourseHeaderDetails
         return $this;
     }
 
-    public function getModuleDecription(): ?string
+    public function getModuleDescription(): ?string
     {
-        return $this->ModuleDecription;
+        return $this->ModuleDescription;
     }
 
-    public function setModuleDecription(string $ModuleDecription): self
+    public function setModuleDescription(string $ModuleDescription): self
     {
-        $this->ModuleDecription = $ModuleDecription;
+        $this->ModuleDescription = $ModuleDescription;
 
         return $this;
     }
@@ -89,6 +113,42 @@ class CourseHeaderDetails
     public function setModuleDuration(\DateTimeInterface $ModuleDuration): self
     {
         $this->ModuleDuration = $ModuleDuration;
+
+        return $this;
+    }
+
+    public function getModuleAttachment(): ?string
+    {
+        return $this->ModuleAttachment;
+    }
+
+    public function setModuleAttachment(string $ModuleAttachment): self
+    {
+        $this->ModuleAttachment = $ModuleAttachment;
+
+        return $this;
+    }
+
+    public function getAttachmentSize(): ?int
+    {
+        return $this->AttachmentSize;
+    }
+
+    public function setAttachmentSize(?int $AttachmentSize): self
+    {
+        $this->AttachmentSize = $AttachmentSize;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->UpdatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $UpdatedAt): self
+    {
+        $this->UpdatedAt = $UpdatedAt;
 
         return $this;
     }

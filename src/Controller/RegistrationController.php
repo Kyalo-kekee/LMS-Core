@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\LmsUserRoles;
 use App\Entity\MshuleUser;
 use App\Form\RegistrationFormType;
+use App\Repository\LmsUserRolesRepository;
 use App\Repository\MshuleUserRepository;
 use App\Security\EmailVerifier;
 use App\Security\UserServerAuthenticator;
@@ -28,12 +30,16 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, UserServerAuthenticator $authenticator, EntityManagerInterface $entityManager): Response
+    public function register(
+        Request $request,
+        UserPasswordHasherInterface $userPasswordHasher,
+        UserAuthenticatorInterface $userAuthenticator,
+        UserServerAuthenticator $authenticator,
+        EntityManagerInterface $entityManager, LmsUserRolesRepository $lmsUserRolesRepository): Response
     {
         $user = new MshuleUser();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setDesignation($form->get('Designation')->getData());
             $user->setSalutation($form->get('Salutation')->getData());
@@ -48,10 +54,8 @@ class RegistrationController extends AbstractController
                     $form->get('plainPassword')->getData()
                 )
             );
-
             $entityManager->persist($user);
             $entityManager->flush();
-
             // generate a signed url and email it to the user
             $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
                 (new TemplatedEmail())
@@ -60,18 +64,13 @@ class RegistrationController extends AbstractController
                     ->subject('Please Confirm your Email')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
-            // do anything else you need here, like send an email
-
-            /*return $userAuthenticator->authenticateUser(
-                $user,
-                $authenticator,
-                $request
-            );*/
             $this ->addFlash('success',"Registration Success, This user can now access parts of the system");
         }
-
+        /*get user roles*/
+        $userRoles = $lmsUserRolesRepository ->findAll();
         return $this->render('registration/user_registration.html.twig', [
             'registrationForm' => $form->createView(),
+            'roles' =>$userRoles
         ]);
     }
 
