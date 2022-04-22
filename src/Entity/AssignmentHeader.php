@@ -26,7 +26,7 @@ class AssignmentHeader
     private ?string $Content;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $Attachment;
+    private ?string $Attachment ='';
 
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $SubmitBefore;
@@ -43,6 +43,20 @@ class AssignmentHeader
     #[ORM\Column(type: 'string', length: 255)]
     private $ClassId;
 
+    #[ORM\Column(type: 'string', length: 255)]
+    private  $CreatedBy;
+
+    public function getCreatedBy()
+    {
+        return $this->CreatedBy;
+    }
+
+    public function setCreatedBy( string $CreatedBy): self
+    {
+        $this ->CreatedBy = $CreatedBy;
+
+        return $this;
+    }
 
     public function getId(): ?int
     {
@@ -51,12 +65,17 @@ class AssignmentHeader
 
     public  function setAttachmentFile(?File $file = null):void
     {
-        $this ->Attachment = $file;
+        $this ->AttachmentFile = $file;
         if(null !== $file){
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost
             $this ->UpdatedAt = new \DateTimeImmutable();
         }
+    }
+
+    public  function getAttachmentFile(): ?File
+    {
+        return $this->AttachmentFile;
     }
 
     public function getAssignmentName(): ?string

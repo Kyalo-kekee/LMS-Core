@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+{% block page_level_css %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('theme/assets/css/widgets/modules-widgets.css') }}">
+    <link href="{{ asset('theme/assets/css/scrollspyNav.css') }}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="{{ asset('theme/plugins/editors/quill/quill.snow.css') }}">
+{% endblock %}
+{% block title %}Assignment Populate info!{% endblock %}
+{% block page_title %}Create Assignment{% endblock %}
+
+{% block body %}
+    <div class="row layout-top-spacing">
+
+        <div class="col-1"></div>
+        {{ include('feedback_flash_messages.html.twig') }}
+        <div class="col-xl-10 col-lg-10 col-md-10 col-sm-12 col-12 layout-spacing">
+            <div class="widget widget-card-two">
+                <div class="widget-content">
+
+                    <div class="media">
+                        <div class="media-body">
+                            <h6 class="badge badge-info">Assignment Publisher </h6>
+                        </div>
+                    </div>
+
+                    <div class="card-bottom-section">
+                        <h5>Assignment Infomration Information</h5>
+                        {{ form_start(assignmentForm) }}
+                        <div class="form-row ">
+                            <div class="form-group col-md-4 p-4 m-2" style="border:2px dotted #ffe8a1">
+                                {{ form_label(assignmentForm.AttachmentFile,"Attachment") }}
+                                {{ form_row(assignmentForm.AttachmentFile) }}
+                            </div>
+                            <div class="form-group col-md-6">
+                                <div class="row form-group p-2 ">
+                                    {{ form_label(assignmentForm.AssignmentName,"Title") }}
+                                    {{ form_row(assignmentForm.AssignmentName) }}
+                                </div><hr>
+                                {{ form_label(assignmentForm.ClassId,"Class Code") }}
+                                {{ form_row(assignmentForm.ClassId) }}
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4 p-4 m-2" style="border:2px dotted #ffe8a1">
+                                {{ form_label(assignmentForm.SubmitBefore,"Submission Deadline") }}
+                                {{ form_row(assignmentForm.SubmitBefore) }}
+                            </div>
+                            <div class="form-group col-md-6">
+                                {{ form_label(assignmentForm.ModuleId,"Module/Course Id") }}
+                                {{ form_row(assignmentForm.ModuleId) }}
+                            </div>
+                        </div>
+                        <div class="form-row ">
+                            <div class="form-group  col-md-12 p-4">
+                                <div class="widget-content widget-content-area card">
+                                    <div class="badge badge-light p-2 ">
+                                        {{ form_label(assignmentForm.Content, "Content") }}
+
+                                    </div>
+                                    <br>
+
+                                    {{ form_row(assignmentForm.Content) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row p-4">
+                            <button class="btn btn-sm bg-primary">Submit</button>
+                        </div>
+                        {{ form_row(assignmentForm._token) }}
+                        {{ form_end(assignmentForm,{'render_rest':false}) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+    {% block page_level_script %}
+        <script src="{{ asset('theme/assets/js/widgets/modules-widgets.js') }}"></script>
+        <script src="{{ asset('theme/assets/js/scrollspyNav.js') }}"></script>
+        <script src="{{ asset('theme/plugins/editors/quill/quill.js') }}"></script>
+        <script src="{{ asset('theme/plugins/editors/quill/custom-quill.js') }}"></script>
+        <script>
+            var quill = new Quill('#course_module_form_ModuleContent', {
+                modules: {
+                    toolbar: [
+                        [{header: [1, 2, false]}],
+                        ['bold', 'italic', 'underline'],
+                        ['image', 'code-block']
+                    ]
+                },
+                placeholder: 'Compose an epic...',
+                theme: 'snow'  // or 'bubble'
+            });
+        </script>
+
+
+    {% endblock %}

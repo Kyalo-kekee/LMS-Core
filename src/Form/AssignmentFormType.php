@@ -13,12 +13,27 @@ class AssignmentFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('AssignmentName')
-            ->add('ModuleId')
-            ->add('Content')
-            ->add('SubmitBefore')
+            ->add('AssignmentName',null,[
+                'label'=>false,
+                'attr'=>['class'=>'form-control']
+            ])
+            ->add('ModuleId',null,[
+                'label'=>false,
+                'attr'=>['class'=>'form-control']
+            ])
+            ->add('Content',null,[
+                'label'=>false,
+                'attr'=>['class'=>'form-control']
+            ])
+            ->add('SubmitBefore',null,[
+                'label'=>false,
+                'attr'=>['class'=>'form-control']
+            ])
             ->add('UpdatedAt')
-            ->add('ClassId')
+            ->add('ClassId',null,[
+                'label'=>false,
+                'attr'=>['class'=>'form-control']
+            ])
             ->add(
 
                 'AttachmentFile',
@@ -29,7 +44,7 @@ class AssignmentFormType extends AbstractType
                     'allow_delete' => true,
                     'delete_label' => 'delete file',
                     'download_uri' => '...',
-                    'download_label' => '...',
+                    'download_label' => 'download file',
                     'asset_helper' => true,
                 ]
             )

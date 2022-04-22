@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+{% block page_level_css %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('theme/assets/css/widgets/modules-widgets.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('theme/plugins/table/datatable/datatables.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('theme/plugins/table/datatable/datatables.css') }}">
+{% endblock %}
+{% block title %}Hello CourseController!{% endblock %}
+{% block page_title %}Create Course{% endblock %}
+
+{% block body %}
+    <div class="row layout-top-spacing">
+        <div class="col-1"></div>
+        <div class="col-xl-10 col-lg-10 col-md-10 col-sm-12 col-12 layout-spacing">
+
+
+                        <div class="widget-content widget-content-area br-6">
+                            <h5>Course Module  Information</h5>
+                            <div class="list-group">
+                                <span class="list-group-item">{{ courseHeader.courseName }}</span>
+                                <span class="list-group-item">{{ courseHeader.courseCode }}</span>
+                            </div>
+                            <div class="col-1 pull-right p-2" style="right: -90%">
+                                <a id="" class="btn btn-dark mb-2 mr-2 rounded-circle" href="{{ path('app_populate_course', {'courseId': courseHeader.id}) }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                         class="feather feather-plus">
+                                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    </svg>
+                                </a>
+                            </div>
+                            <table id="zero-config" class="table table-striped" style="width:100%">
+                                <thead>
+                                <tr>
+
+                                    <th>Course ID</th>
+                                    <th>Module Name</th>
+                                    <th>Description</th>
+                                    <th>Attachment</th>
+                                    <th class="no-content">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for course in courseModules %}
+                                    <tr>
+                                        <td>{{ course.courseId }}</td>
+                                        <td>{{ course.moduleName }}</td>
+                                        <td>{{ course.moduleDescription }}</td>
+                                        <td><a class="" href="{{ vich_uploader_asset(course, course.attachmentFile)}}"> {{ course.moduleAttachment }}</a></td>
+                                        <td>
+                                            <a href="">more...</a>
+                                            <a>delete</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+{% endblock %}
+{% block page_level_script %}
+    <script src="{{ asset('theme/assets/js/widgets/modules-widgets.js') }}"></script>
+    <script src="{{ asset('theme/plugins/table/datatable/datatables.js') }}"></script>
+    <script>
+        $('#zero-config').DataTable({
+            "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
+                "<'table-responsive'tr>" +
+                "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+            "oLanguage": {
+                "oPaginate": {
+                    "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
+                    "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
+                },
+                "sInfo": "Showing page _PAGE_ of _PAGES_",
+                "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                "sSearchPlaceholder": "Search...",
+                "sLengthMenu": "Results :  _MENU_",
+            },
+            "stripeClasses": [],
+            "lengthMenu": [7, 10, 20, 50],
+            "pageLength": 20
+        });
+    </script>
+    {# END PAGE LEVEL SCRIPTS #}
+{% endblock %}

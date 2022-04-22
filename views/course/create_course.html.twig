@@ -34,8 +34,8 @@
                             {{ form_row(courseForm.CourseDuration) }}
                         </div>
                         <div class="form-group col-md-4">
-                            {{ form_label(courseForm.CourserTutor,"Tutor Name") }}
-                            {{ form_row(courseForm.CourserTutor) }}
+                            {{ form_label(courseForm.CourserTutor,"Created By") }}
+                            {{ form_row(courseForm.CourserTutor,{'value': app.user.username}) }}
                         </div>
                     </div>
                     <div class="form-row ">

@@ -28,13 +28,13 @@ class CourseHeaderDetails
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $ModuleContent;
 
-    #[ORM\Column(type: 'datetime')]
-    private ?\DateTimeInterface $ModuleDuration;
+    #[ORM\Column(type: 'string', length: 255)]
+    private $ModuleDuration;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $ModuleAttachment;
+    private ?string $ModuleAttachment= '';
 
-    #[Vich\UploadableField(mapping: "course",fileNameProperty: 'ModuleAttachment', size: 'AttachmentSize')]
+    #[Vich\UploadableField(mapping: "courses",fileNameProperty: 'ModuleAttachment', size: 'AttachmentSize')]
     private  $AttachmentFile;
 
     #[ORM\Column(type: 'integer', nullable: true)]
@@ -56,6 +56,10 @@ class CourseHeaderDetails
             // otherwise the event listeners won't be called and the file is lost
             $this ->UpdatedAt = new \DateTimeImmutable();
         }
+    }
+    public  function getAttachmentFile()
+    {
+        return $this->AttachmentFile;
     }
     public function getCourseId(): ?int
     {
@@ -105,12 +109,12 @@ class CourseHeaderDetails
         return $this;
     }
 
-    public function getModuleDuration(): ?\DateTimeInterface
+    public function getModuleDuration(): ?string
     {
         return $this->ModuleDuration;
     }
 
-    public function setModuleDuration(\DateTimeInterface $ModuleDuration): self
+    public function setModuleDuration(string $ModuleDuration): self
     {
         $this->ModuleDuration = $ModuleDuration;
 

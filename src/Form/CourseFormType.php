@@ -16,7 +16,8 @@ class CourseFormType extends AbstractType
         $builder
             ->add('CourseName',TextareaType::class,['label'=>false])
             ->add('CourseDuration',null,['label'=>false])
-            ->add('CourserTutor',null,['label'=>false])
+            ->add('CourserTutor',null,['label'=>false, 'disabled'=> true,
+                ])
             ->add('ClassId',null,['label'=>false])
             ->add('IsActive',CheckboxType::class,['label'=>false])
             ->add('CourseCode',null,['label'=>false])
