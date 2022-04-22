@@ -24,7 +24,7 @@ StudentAssignmentHeader
     private ?string $Content;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $Attachment;
+    private ?string $Attachment = '';
 
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $SubmitDate;
@@ -41,6 +41,9 @@ StudentAssignmentHeader
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $AttachmentSize;
 
+    #[ORM\Column(type: 'string', length: 255)]
+    private $ClassId;
+
 
     public function getId(): ?int
     {
@@ -53,12 +56,17 @@ StudentAssignmentHeader
     }
     public  function setAttachmentFile(?File $file = null):void
     {
-        $this ->Attachment = $file;
+        $this ->AttachmentFile = $file;
         if(null !== $file){
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost
             $this ->UpdatedAt = new \DateTimeImmutable();
         }
+    }
+
+    public  function getAttachmentFile(): ?File
+    {
+        return $this->AttachmentFile;
     }
 
     public function setModuleId(string $ModuleId): self
@@ -137,6 +145,18 @@ StudentAssignmentHeader
     public function setAttachmentSize(?int $AttachmentSize): self
     {
         $this->AttachmentSize = $AttachmentSize;
+
+        return $this;
+    }
+
+    public function getClassId(): ?string
+    {
+        return $this->ClassId;
+    }
+
+    public function setClassId(string $ClassId): self
+    {
+        $this->ClassId = $ClassId;
 
         return $this;
     }

@@ -39,8 +39,10 @@ security:
         # - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/recover, roles: PUBLIC_ACCESS }
-        #- { path: ^/, roles: ROLE_LECTURER }
+        - { path: ^/register, roles: ROLE_ADMIN }
         - { path: ^/student-assignments, roles: ROLE_STUDENT }
+        - { path: ^/course-header/ROLE_LECTURER, roles: ROLE_LECTURER}
+        - { path: ^/course-header/ROLE_STUDENT, roles: ROLE_STUDENT}
 
 when@test:
     security:

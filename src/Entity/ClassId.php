@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\ClearRepository;
+use App\Repository\ClassIdRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ClearRepository::class)]
-class Clear
+#[ORM\Entity(repositoryClass: ClassIdRepository::class)]
+class ClassId
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
