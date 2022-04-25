@@ -4,7 +4,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('theme/plugins/table/datatable/datatables.css') }}">
 {% endblock %}
 {% block title %}Assignments{% endblock %}
-{% block page_title %}Assignments{% endblock %}
+{% block page_title %}{{ assignmentHeader[0].AssignmentName }} <b class="text-danger">(SUBMITTED)</b>{% endblock %}
 {% block body %}
     <div class="row layout-top-spacing" id="cancel-row">
 
@@ -13,38 +13,36 @@
 
             <div class="widget-content widget-content-area br-6">
                 <div class="col-1 pull-right p-2" style="right: -90%">
-                    <a id="" class="btn btn-dark mb-2 mr-2 rounded-circle" href="{{ path('app_create_assignment') }}">
+                   {# <a id="" class="btn btn-dark mb-2 mr-2 rounded-circle" href="{{ path('app_create_assignment') }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                              class="feather feather-plus">
                             <line x1="12" y1="5" x2="12" y2="19"></line>
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                         </svg>
-                    </a>
+                    </a>#}
                 </div>
                 <table id="zero-config" class="table table-striped" style="width:100%">
                     <thead>
                     <tr>
                         <th>Title</th>
-                        <th>Submit before</th>
-                        <th>Owner</th>
+                        <th>Submit On</th>
+                        <th>Student ID</th>
                         <th>Class ID</th>
-                        <th>Attachment</th>
                         <th class="no-content">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for assignment in assignments %}
                         <tr>
-                            <td>{{ assignment.AssignmentName }}</td>
-                            <td>{{ assignment.SubmitBefore.format('y/m/d m:s:h') }}</td>
-                            <td>{{ assignment.CreatedBy }}</td>
-                            <td>{{ assignment.classId}}</td>
-                            <td><a href="{{ vich_uploader_asset(assignment,'AttachmentFile') }}">{{ assignment.Attachment }}</a></td>
+                            <td>{% if assignment.Title is  null %}{{ assignment.Title }}{% else %}{{ assignmentHeader[0].AssignmentName }}{% endif %}</td>
+                            <td>{{ assignment.SubmitDate.format('y/m/d m:s:h') }}</td>
+                            <td>{{ assignment.StudentId }}</td>
+                            <td>{{ assignment.ClassId}}</td>
 
 
                             <td>
-                               <a href="{{ path('app_submitted_assignments', {'module_id': assignment.moduleId}) }}">View Submitted</a>
+                                <a class="btn btn-sm" href="{{ vich_uploader_asset(assignment,'AttachmentFile') }}"><img src="{{ asset('enterprise/icons8-download-32.png') }} ">download</a>
                             </td>
                         </tr>
                     {% endfor %}

@@ -44,6 +44,12 @@ StudentAssignmentHeader
     #[ORM\Column(type: 'string', length: 255)]
     private $ClassId;
 
+    #[ORM\Column(type: 'string', length: 255)]
+    private $Title;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $Owner;
+
 
     public function getId(): ?int
     {
@@ -157,6 +163,30 @@ StudentAssignmentHeader
     public function setClassId(string $ClassId): self
     {
         $this->ClassId = $ClassId;
+
+        return $this;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->Title;
+    }
+
+    public function setTitle(string $Title): self
+    {
+        $this->Title = $Title;
+
+        return $this;
+    }
+
+    public function getOwner(): ?string
+    {
+        return $this->Owner;
+    }
+
+    public function setOwner(string $Owner): self
+    {
+        $this->Owner = $Owner;
 
         return $this;
     }

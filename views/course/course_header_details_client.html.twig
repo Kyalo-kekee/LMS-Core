@@ -3,8 +3,8 @@
     <link href="{{ asset('theme/assets/css/apps/notes.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('theme/assets/css/forms/theme-checkbox-radio.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}
-{% block title %}Assignments{% endblock %}
-{% block page_title %}Assignments{% endblock %}
+{% block title %}Course{% endblock %}
+{% block page_title %}Course Module ({{ courseHeader.courseName }}){% endblock %}
 {% block body %}
     <div class="row app-notes layout-top-spacing" id="cancel-row">
         <div class="col-lg-12">
@@ -21,20 +21,20 @@
                     <div class="tab-title">
                         <div class="row">
                             <div class="col-md-12 col-sm-12 col-12 text-center">
-                                <a id="btn-add-notes" class="btn btn-primary" href="javascript:void(0);">Submit your assignment</a>
+                                {{ courseHeader.courseName }}<br> MODULES
                             </div>
                             <div class="col-md-12 col-sm-12 col-12 mt-5">
                                 <ul class="nav nav-pills d-block" id="pills-tab3" role="tablist">
                                     <li class="nav-item">
-                                        <a href="{{ path('app_student_assignment', {'action': '', 'module_id': ''}) }}" class="nav-link list-actions active" id="all-notes">
+                                        <a href="{{ path('app_course_courseheader', {'user_role': 'ROLE_STUDENT'}) }}" class="nav-link list-actions active" id="all-notes">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                                                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                                                  class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7">
 
-                                                </path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> All Assignments</a>
+                                                </path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> View Courses</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link list-actions" id="note-fav"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Favourites</a>
+                                        <a class="nav-link list-actions" id="note-work"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Course Modules</a>
                                     </li>
                                 </ul>
                                 <hr/>
@@ -43,7 +43,7 @@
 
                                 <ul class="nav nav-pills d-block group-list" id="pills-tab" role="tablist">
                                     <li class="nav-item">
-                                        <a class="nav-link list-actions g-dot-primary" id="note-personal">submitted assignments</a>
+                                        <a class="nav-link list-actions g-dot-primary" id="note-personal">view module assignments</a>
                                     </li>
                                 </ul>
                             </div>
@@ -52,58 +52,14 @@
 
 
                     <div id="ct" class="note-container note-grid">
-                    {% for assignment in assignments%}
-                        <div class="note-item   note-fav">
-                            <div class="note-inner-content">
-                                <div class="note-content">
-                                    <p class="note-title" data-noteTitle="Meeting with Kelly">{{ assignment.AssignmentName }}</p>
-                                    <hr>
-                                    <h6 class="text-danger">Deadline</h6>
-                                    <p class="meta-time">{{ assignment.SubmitBefore.format('y/m/d h:m:s a') }}</p>
-                                    <div class="note-description-content">
-                                        <p class="note-description" data-noteDescription="Curabitur facilisis vel elit sed dapibus sodales purus rhoncus.">
-
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="note-action">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star fav-note"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                    <a href="{{ vich_uploader_asset(assignment,'AttachmentFile') }}">
-                                        <img src="{{ asset('enterprise/PDF-16-40px/icons8-pdf-16.png') }}">
-                                    </a>
-                                    <a href="{{ path('app_student_assignment', {'action': 'submit', 'module_id': assignment.ModuleId}) }}">
-                                        <img src="{{ asset('enterprise/icons8-upload-16.png') }}">submit</a>
-                                </div>
-                                <div class="note-footer">
-                                    <div class="tags-selector btn-group">
-                                        <a class="nav-link dropdown-toggle d-icon label-group" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
-                                            <div class="tags">
-                                                <div class="g-dot-personal"></div>
-                                                <div class="g-dot-work"></div>
-                                                <div class="g-dot-social"></div>
-                                                <div class="g-dot-important"></div>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
-                                            </div>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right d-icon-menu">
-                                            <a class="note-personal label-group-item label-personal dropdown-item position-relative g-dot-personal" href="javascript:void(0);"> Personal</a>
-                                            <a class="note-work label-group-item label-work dropdown-item position-relative g-dot-work" href="javascript:void(0);"> Work</a>
-                                            <a class="note-social label-group-item label-social dropdown-item position-relative g-dot-social" href="javascript:void(0);"> Social</a>
-                                            <a class="note-important label-group-item label-important dropdown-item position-relative g-dot-important" href="javascript:void(0);"> Important</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                        {% for assignment in submitted%}
-                            <div class="note-item   note-personal">
+                        {% for course in courseModules %}
+                            <div class="note-item  note-work">
                                 <div class="note-inner-content">
                                     <div class="note-content">
-                                        <p class="note-title" data-noteTitle="Meeting with Kelly">ID:{{ assignment.ModuleId }}</p>
+                                        <p class="note-title" data-noteTitle="Meeting with Kelly">{{ courseHeader.courseCode }}</p>
                                         <hr>
-                                        <h6 class="text-danger">Submitted on</h6>
-                                        <p class="meta-time">{{ assignment.SubmitDate.format('y/m/d h:m:s a') }}</p>
+                                        <h6 class="text-danger">TITLE</h6>
+                                        <p class="meta-time">{{ course.moduleName }}</p>
                                         <div class="note-description-content">
                                             <p class="note-description" data-noteDescription="Curabitur facilisis vel elit sed dapibus sodales purus rhoncus.">
 
@@ -112,7 +68,7 @@
                                     </div>
                                     <div class="note-action">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star fav-note"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                        <a href="{{ vich_uploader_asset(assignment,'AttachmentFile') }}">
+                                        <a href="{{ vich_uploader_asset(course,'AttachmentFile') }}">
                                             <img src="{{ asset('enterprise/PDF-16-40px/icons8-pdf-16.png') }}">
                                         </a>
                                     </div>
@@ -146,15 +102,15 @@
             </div>
 
             <!-- Modal -->
-            {% if module_id is not null %}
-            <div class="modal fade" id="notesMailModal" tabindex="-1" role="dialog" aria-labelledby="notesMailModalTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-body">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x close" data-dismiss="modal"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                            <div class="notes-content">
-                            <div class="notes-box">
-                                {{ form_start(submitForm) }}
+    {#        {% if module_id is not null %}
+                <div class="modal fade" id="notesMailModal" tabindex="-1" role="dialog" aria-labelledby="notesMailModalTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x close" data-dismiss="modal"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                <div class="notes-content">
+                                    <div class="notes-box">
+                                        {{ form_start(submitForm) }}
                                         <div class="row">
 
                                             <div class="col-md-12">
@@ -171,29 +127,29 @@
                                                 <span class="validation-text"></span>
                                             </div>
                                         </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button id="btn-n-save" class="float-left btn">Save</button>
-                            <button class="btn" data-dismiss="modal"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> Discard</button>
-                            <button type="submit" class="btn btn-primary">Submit Assignment</button>
-                            {{ form_end(submitForm) }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-                {% else %}
-            <div class="modal fade" id="notesMailModal" tabindex="-1" role="dialog" aria-labelledby="notesMailModalTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-body">
-                            <div class="alert alert-danger">Please select the assigment first</div>
+                            <div class="modal-footer">
+                                <button id="btn-n-save" class="float-left btn">Save</button>
+                                <button class="btn" data-dismiss="modal"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> Discard</button>
+                                <button type="submit" class="btn btn-primary">Submit Assignment</button>
+                                {{ form_end(submitForm) }}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            {% endif %}
+            {% else %}#}
+             {#   <div class="modal fade" id="notesMailModal" tabindex="-1" role="dialog" aria-labelledby="notesMailModalTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="alert alert-danger">Please select the assigment first</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}#}
 
         </div>
     </div>

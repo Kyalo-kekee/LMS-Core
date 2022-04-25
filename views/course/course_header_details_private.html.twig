@@ -48,8 +48,7 @@
                                         <td>{{ course.moduleDescription }}</td>
                                         <td><a class="" href="{{ vich_uploader_asset(course, course.attachmentFile)}}"> {{ course.moduleAttachment }}</a></td>
                                         <td>
-                                            <a href="">more...</a>
-                                            <a>delete</a>
+                                            <a href="{{ path('app_populate_course', {'courseId': course.id, 'mode': 'edit'}) }}"><img src="{{ asset('enterprise/icons8-book-and-pencil-24.png') }}"></a>
                                         </td>
                                     </tr>
                                 {% endfor %}
