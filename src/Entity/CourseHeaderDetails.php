@@ -31,7 +31,7 @@ class CourseHeaderDetails
     #[ORM\Column(type: 'string', length: 255)]
     private $ModuleDuration;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $ModuleAttachment= '';
 
     #[Vich\UploadableField(mapping: "courses",fileNameProperty: 'ModuleAttachment', size: 'AttachmentSize')]
@@ -126,9 +126,10 @@ class CourseHeaderDetails
         return $this->ModuleAttachment;
     }
 
-    public function setModuleAttachment(string $ModuleAttachment): self
+    public function setModuleAttachment(string $ModuleAttachment ): self
     {
-        $this->ModuleAttachment = $ModuleAttachment;
+
+        $this->ModuleAttachment = $ModuleAttachment ?: '';
 
         return $this;
     }

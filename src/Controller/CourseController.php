@@ -91,13 +91,17 @@ class CourseController extends AbstractController
             'edit' => $courseHeaderDetailsRepository->find($courseId),
             null => new CourseHeaderDetails()
         };
-
         $form = $this->createForm(CourseModuleFormType::class, $course_module);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $course_module->setCourseId($courseId);
+            if($mode == 'edit'){
+                $course_module->setCourseId($course_module->getCourseId()) ;
+            }else{
+                $course_module->setCourseId($courseId);
+            }
+
             $course_module->setModuleContent($form->get('ModuleContent')->getData());
             //$course_module->setModuleDuration($form ->get('ModuleDuration')->getData());
             $course_module->setAttachmentFile($form->get('AttachmentFile')->getData());
@@ -115,8 +119,8 @@ class CourseController extends AbstractController
         }
 
         $courseInfo = $repository->find($courseId);
-        if(!empty($course_module)){
-            $courseInfo = $repository ->find( $course_module ->getCourseId());
+        if (!empty($course_module)) {
+            $courseInfo = $repository->find($course_module->getCourseId());
 
         }
         return $this->render('course/course_module_populate_info.html.twig', [

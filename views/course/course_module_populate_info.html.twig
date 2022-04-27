@@ -55,15 +55,20 @@
                         </div>
                     </div>
                     <div class="form-row ">
-                        <div class="form-group  col-md-12 p-4">
+                        <div class="form-group  col-md-6 p-4">
                             {{ form_label(courseModuleForm.ModuleDuration,'Duration') }}
                             {{ form_row(courseModuleForm.ModuleDuration) }}
+                        </div>
+                        <div class="form-group  col-md-6 p-4">
+                            {{ form_label(courseModuleForm.CourseId,'Course ID') }}
+                            {{ form_row(courseModuleForm.CourseId) }}
                         </div>
                     </div>
 
                         <div class="form-row p-4">
                             <button class="btn btn-sm bg-primary">Submit</button>
                         </div>
+
                         {{ form_row(courseModuleForm._token) }}
                         {{ form_end(courseModuleForm,{'render_rest':false}) }}
                     </div>

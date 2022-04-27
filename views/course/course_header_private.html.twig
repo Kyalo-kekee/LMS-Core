@@ -30,7 +30,9 @@
                         <th>Duration</th>
                         <th>Class ID</th>
                         <th>Tutor</th>
+                        {% if 'ROLE_LECTURER' in app.user.roles %}
                         <th>Published</th>
+                        {% endif %}
                         <th class="no-content">Actions</th>
                     </tr>
                     </thead>
@@ -42,6 +44,7 @@
                             <td>{{ course.courseDuration }}</td>
                             <td>{{ course.classId }}</td>
                             <td>{{ course.courserTutor }}</td>
+                            {% if 'ROLE_LECTURER' in app.user.roles %}
                             <td>
                                 {% if course.isActive == 1 %}
                                     <span class="badge badge-success">Yes</span>
@@ -50,11 +53,14 @@
                                 {% endif %}
 
                             </td>
+                            {% endif %}
                             <td class="p-2">
                                 <a href="{{ path('app_course_header_details', {'course_id': course.id, 'user_role': app.user.roles[0]}) }}">
                                     <img src="{{ asset('enterprise/icons8-plus-and-minus-24.png') }}">
                                     </a>
+                                {% if 'ROLE_LECTURER' in app.user.roles %}
                                 <a href="{{ path('app_create_course', {'course_id': course.id, 'mode': 'edit'}) }}" title="edit course"><img src="{{ asset('enterprise/icons8-book-and-pencil-24.png') }}"></a>
+                                {% endif %}
 
                             </td>
                         </tr>

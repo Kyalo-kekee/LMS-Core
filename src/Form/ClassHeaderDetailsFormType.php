@@ -12,6 +12,7 @@ class ClassHeaderDetailsFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add("CourseId")
             ->add('ClassID')
             ->add('SectionID')
             ->add('MaxStudents')

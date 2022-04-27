@@ -16,7 +16,10 @@ class CourseModuleFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('CourseId')
+            ->add('CourseId',null,[
+                'attr'=>['class'=>'form-control-md'],
+                'disabled'=>true
+            ])
             ->add('ModuleName',null,[
                 'label'=> false,
                 'attr'=>['class' => 'form-control']
@@ -29,7 +32,7 @@ class CourseModuleFormType extends AbstractType
                 'label'=>false,
                 'attr'=>['id'=> 'editor-container', 'class'=>'form-control']
             ])
-            ->add('ModuleDuration')
+            ->add('ModuleDuration',null,['label'=>false,'attr'=>['class'=>'form-control-md']])
             ->add(
                 'AttachmentFile',
                 VichFileType::class,
