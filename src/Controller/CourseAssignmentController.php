@@ -74,20 +74,11 @@ class CourseAssignmentController extends AbstractController
         AssignmentHeaderRepository $assignmentHeaderRepository,
         string $module_id): Response
     {
-        $submitted =  $studentAssignmentHeaderRepository->createQueryBuilder('std')
-            ->where('std.ModuleId = :moduleId')
-            ->andWhere('std.Owner = :Owner')
-            ->setParameters(new ArrayCollection(
-                [
-                    new Parameter('moduleId', $module_id),
-                    new Parameter('Owner',$this->getUser()->getUserIdentifier())
-                ]
-            ))->getQuery()->getResult();
+        $submitted =  $studentAssignmentHeaderRepository
+            ->getSubmittedAssignment($module_id,$this->getUser()->getUserIdentifier());
 
-        $assignmentHeader = $assignmentHeaderRepository ->createQueryBuilder('ah')
-            ->where('ah.ModuleId = :moduleId')
-            ->setParameter('moduleId',$module_id)
-            ->getQuery() ->getResult();
+        $assignmentHeader = $assignmentHeaderRepository
+            ->getModuleAssignment($module_id);
 
         return $this->render('course_assignment/submitted_assignment_header.html.twig', [
             'controller_name' => 'CourseAssignmentController',
@@ -108,38 +99,23 @@ class CourseAssignmentController extends AbstractController
     )
     {
         $roles = $this->getUser()->getRoles();
-        $user = $userRepository->createQueryBuilder('USER')
-            ->where('USER.username = :username')
-            ->setParameters(new ArrayCollection(array(
-                new Parameter('username', $this->getUser()->getUserIdentifier())
-            )))->getQuery();
-        $client = $user->getResult();
-        $classId = $client[0]->getClassId();
+        $current_logged_in_student_user = $userRepository ->findByIdentifier($this ->getUser()->getUserIdentifier());
+        $classId = $current_logged_in_student_user[0]->getClassId();
 
         $student_assignment = new StudentAssignmentHeader();
         $form = $this->createForm(StudentAssignmentSubmissionFormType::class, $student_assignment);
         $form->handleRequest($request);
 
         if (!is_null($module_id)) {
-            $student_submit_check = $studentAssignmentHeaderRepository->createQueryBuilder('std')
-                ->where('std.ModuleId = :moduleId')
-                ->andWhere('std.StudentId = :studentId')
-                ->setParameters(new ArrayCollection(
-                    [
-                        new Parameter('moduleId', $module_id),
-                        new Parameter('studentId', $client[0]->getStudentId())
-                    ]
-                ))->getQuery()->getResult();
+            $student_submit_check = $studentAssignmentHeaderRepository
+                -> hasSubmittedAssignment($module_id, $current_logged_in_student_user[0]->getStudentId());
             /*todo:check for submission deadline*/
+
             if(empty($student_submit_check)){
 
 
                 if ($form->isSubmitted() && $form->isValid()) {
-                    $assignmentHeader = $assignmentHeaderRepository ->createQueryBuilder('aH')
-                        ->where('aH.ModuleId = moduleId')
-                        -> setParameter('moduleId', $module_id)
-                        ->getQuery()->getResult();
-
+                    $assignmentHeader = $assignmentHeaderRepository ->getModuleAssignment($module_id);
                     $student_assignment ->setTitle($assignmentHeader[0]->getAssignmentName());
                     $student_assignment ->setOwner($assignmentHeader[0]->getCreatedBy());
                     $student_assignment->setClassId($classId);
@@ -148,19 +124,18 @@ class CourseAssignmentController extends AbstractController
                     $student_assignment->setContent($form->get('Content')->getData());
                     $student_assignment->setSubmitDate(new \DateTime('now'));
                     $student_assignment->setUpdatedAt(new \DateTimeImmutable());
-                    $student_assignment->setStudentId($client [0]->getStudentId());
+                    $student_assignment->setStudentId($current_logged_in_student_user [0]->getStudentId());
 
                     try {
-                        $entityManager->persist($student_assignment);
-                        $entityManager->flush();
-                        $this->addFlash('success', 'Assignment submitted successfully');
+                        $studentAssignmentHeaderRepository ->add($student_assignment,true);
+                        $this->addFlash('success', $studentAssignmentHeaderRepository::SUBMITTED_ASSIGNMENT_SUCCESS);
                     } catch (\Exception $e) {
                         $this->addFlash('fail', 'A database error occurred please contact admin or try resubmitting');
                         $this->addFlash('fail', 'Error info - ' . $e->getMessage());
                     }
                 }
             }else{
-                    $this->addFlash('fail', 'You  already submitted this assignment on: '.
+                    $this->addFlash('fail', $studentAssignmentHeaderRepository::SUBMITTED_ASSIGNMENT_CHECK_FAIL .':'.
                         $student_submit_check[0]->getSubmitDate()->format('d/m/y h:m:s A'));
             }
         }
@@ -176,7 +151,7 @@ class CourseAssignmentController extends AbstractController
             //get student  submitted assignments
             $student_assignment = $studentAssignmentHeaderRepository->createQueryBuilder('stdA')
                 ->where('stdA.StudentId = :studentId')
-                ->setParameter('studentId', $client[0]->getStudentId())
+                ->setParameter('studentId', $current_logged_in_student_user[0]->getStudentId())
                 ->getQuery()
                 ->getResult();
             return $this->render('course_assignment/assignment_header_student.html.twig', [

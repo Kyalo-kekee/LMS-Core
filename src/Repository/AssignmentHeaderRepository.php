@@ -45,6 +45,14 @@ class AssignmentHeaderRepository extends ServiceEntityRepository
         }
     }
 
+    public  function getModuleAssignment(string $module_id)
+    {
+        return $this ->createQueryBuilder('ah')
+            ->where('ah.ModuleId = :moduleId')
+            ->setParameter('moduleId',$module_id)
+            ->getQuery() ->getResult();
+    }
+
     // /**
     //  * @return AssignmentHeader[] Returns an array of AssignmentHeader objects
     //  */

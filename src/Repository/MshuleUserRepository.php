@@ -4,8 +4,10 @@ namespace App\Repository;
 
 use App\Entity\MshuleUser;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Query\Parameter;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -60,6 +62,15 @@ class MshuleUserRepository extends ServiceEntityRepository implements PasswordUp
         $user->setPassword($newHashedPassword);
         $this->_em->persist($user);
         $this->_em->flush();
+    }
+
+    public function  findByIdentifier(string $identifier)
+    {
+        return $this  ->createQueryBuilder('USER')
+            ->where('USER.username = :username')
+            ->setParameters(new ArrayCollection(array(
+                new Parameter('username',$identifier)
+            )))->getQuery()->getResult();
     }
 
     // /**

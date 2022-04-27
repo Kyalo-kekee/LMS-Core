@@ -4,8 +4,10 @@ namespace App\Repository;
 
 use App\Entity\StudentAssignmentHeader;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Query\Parameter;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,6 +18,10 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class StudentAssignmentHeaderRepository extends ServiceEntityRepository
 {
+    const SUBMITTED_ASSIGNMENT_SUCCESS = 'Assignment submitted successfully';
+    const SUBMITTED_ASSIGNMENT_CHECK_FAIL = 'You already made submissions for this assignment';
+
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, StudentAssignmentHeader::class);
@@ -45,32 +51,32 @@ class StudentAssignmentHeaderRepository extends ServiceEntityRepository
         }
     }
 
-    // /**
-    //  * @return StudentAssignmentHeader[] Returns an array of StudentAssignmentHeader objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public  function getSubmittedAssignment ( string $module_id ,string $owner)
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        return $this ->createQueryBuilder('std')
+            ->where('std.ModuleId = :moduleId')
+            ->andWhere('std.Owner = :Owner')
+            ->setParameters(new ArrayCollection(
+                [
+                    new Parameter('moduleId', $module_id),
+                    new Parameter('Owner',$owner)
+                ]
+            ))->getQuery()->getResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?StudentAssignmentHeader
+    public function hasSubmittedAssignment (string $module_id,$student_user_identifier)
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $this -> createQueryBuilder('std')
+            ->where('std.ModuleId = :moduleId')
+            ->andWhere('std.StudentId = :studentId')
+            ->setParameters(new ArrayCollection(
+                [
+                    new Parameter('moduleId', $module_id),
+                    new Parameter('studentId',$student_user_identifier)
+                ]
+            ))->getQuery()->getResult();
     }
-    */
+
+
+
 }
