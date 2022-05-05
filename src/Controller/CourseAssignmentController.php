@@ -93,7 +93,6 @@ class CourseAssignmentController extends AbstractController
         StudentAssignmentHeaderRepository $studentAssignmentHeaderRepository,
         MshuleUserRepository              $userRepository,
         Request                           $request,
-        EntityManagerInterface            $entityManager,
         string                            $action = null,
         string                            $module_id = null,
     )
@@ -142,11 +141,7 @@ class CourseAssignmentController extends AbstractController
 
         if (in_array('ROLE_STUDENT', $roles)) {
 
-            $assignments = $assignmentHeaderRepository->createQueryBuilder('A')
-                ->where('A.ClassId = :classId')
-                ->setParameter('classId', $classId)
-                ->getQuery()
-                ->getResult();
+            $assignments = $assignmentHeaderRepository->getClassAssignments($classId);
 
             //get student  submitted assignments
             $student_assignment = $studentAssignmentHeaderRepository->createQueryBuilder('stdA')

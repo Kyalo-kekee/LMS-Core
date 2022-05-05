@@ -10,6 +10,7 @@ use App\Repository\CourseHeaderDetailsRepository;
 use App\Repository\CourseHeaderRepository;
 use Container4db5V3Z\getUniqidNamerService;
 use Doctrine\ORM\EntityManagerInterface;
+use http\Exception\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -87,10 +88,15 @@ class CourseController extends AbstractController
     ): Response
     {
 
-        $course_module = match ($mode) {
-            'edit' => $courseHeaderDetailsRepository->find($courseId),
-            null => new CourseHeaderDetails()
-        };
+        try{
+            $course_module = match ($mode) {
+                'edit' => $courseHeaderDetailsRepository->find($courseId),
+                null => new CourseHeaderDetails()
+            };
+        }catch (\Exception $e){
+            throw new InvalidArgumentException($e ->getMessage());
+        }
+
         $form = $this->createForm(CourseModuleFormType::class, $course_module);
         $form->handleRequest($request);
 

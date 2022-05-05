@@ -53,6 +53,17 @@ class AssignmentHeaderRepository extends ServiceEntityRepository
             ->getQuery() ->getResult();
     }
 
+    public function  getClassAssignments($class_id)
+    {
+        return $this ->createQueryBuilder('A')
+            ->where('A.ClassId = :classId')
+            ->setParameter('classId', $class_id)
+            ->getQuery()
+            ->getResult();
+    }
+
+
+
     // /**
     //  * @return AssignmentHeader[] Returns an array of AssignmentHeader objects
     //  */

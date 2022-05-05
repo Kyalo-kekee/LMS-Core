@@ -10,6 +10,7 @@ use App\Repository\MshuleUserRepository;
 use App\Security\EmailVerifier;
 use App\Security\UserServerAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
+use http\Exception\InvalidArgumentException;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,41 +32,42 @@ class RegistrationController extends AbstractController
 
     #[Route('/register/{client}/{mode}/{user_id}', name: 'app_register')]
     public function register(
-        Request $request,
+        Request                     $request,
         UserPasswordHasherInterface $userPasswordHasher,
-        UserAuthenticatorInterface $userAuthenticator,
-        UserServerAuthenticator $authenticator,
-        EntityManagerInterface $entityManager,
-        LmsUserRolesRepository $lmsUserRolesRepository,
-        MshuleUserRepository $mshuleUserRepository,
-        $client,
-        $mode = 'new',
-        $user_id = null 
+        UserAuthenticatorInterface  $userAuthenticator,
+        UserServerAuthenticator     $authenticator,
+        EntityManagerInterface      $entityManager,
+        LmsUserRolesRepository      $lmsUserRolesRepository,
+        MshuleUserRepository        $mshuleUserRepository,
+                                    $client,
+                                    $mode = 'new',
+                                    $user_id = null
     ): Response
     {
 
-        $user = match($mode){
-            'new' => new MshuleUser(),
-            'edit' => $mshuleUserRepository ->find($user_id)
-        };
+        try {
+            $user = match ($mode) {
+                'new' => new MshuleUser(),
+                'edit' => $mshuleUserRepository->find($user_id)
+            };
+        } catch (\Exception $e) {
+            throw  new InvalidArgumentException($e->getMessage());
+        }
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-
             $user->setSalutation($form->get('Salutation')->getData());
             $user->setFirstName($form->get('FirstName')->getData());
 
-            if ($client === 'ROLE_ADMIN'){
-                $user  ->setDesignation('ADMINISTRATOR');
+            if ($client === 'ROLE_ADMIN') {
+                $user->setDesignation('ADMINISTRATOR');
             }
-            if($client === 'ROLE_STUDENT')
-            {
-                $user ->setClassId($form->get('ClassId')->getData());
-                $user ->setStudentId($form->get('StudentId')->getData());
+            if ($client === 'ROLE_STUDENT') {
+                $user->setClassId($form->get('ClassId')->getData());
+                $user->setStudentId($form->get('StudentId')->getData());
             }
-            if($client === 'ROLE_LECTURE' )
-            {
+            if ($client === 'ROLE_LECTURE') {
                 $user->setDesignation('LECTURER');
                 $user->setEmployeeNumber($form->get('EmployeeNumber')->getData());
                 $user->setIsEmployee($form->get('IsEmployee')->getData());
@@ -74,13 +76,12 @@ class RegistrationController extends AbstractController
             $user->setIsVerified($form->get('IsVerified')->getData());
             $roles = $form->get('Roles')->getData();
             $userRoles = [];
-            foreach ($roles as $role =>$entity)
-            {
+            foreach ($roles as $role => $entity) {
                 $userRoles[] = $entity->getNameRole();
             }
             $user->setRoles($userRoles);
             $user->setPassword(
-            $userPasswordHasher->hashPassword(
+                $userPasswordHasher->hashPassword(
                     $user,
                     $form->get('plainPassword')->getData()
                 )
@@ -97,20 +98,20 @@ class RegistrationController extends AbstractController
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
 
-            if($mode == 'new'){
-                $this ->addFlash('success',"Registration Success, This user can now access parts of the system");
+            if ($mode == 'new') {
+                $this->addFlash('success', "Registration Success, This user can now access parts of the system");
 
-            }else{
+            } else {
                 $this->addFlash('success', 'user updated');
             }
         }
         /*get user roles*/
-        $userRoles = $lmsUserRolesRepository ->findAll();
+        $userRoles = $lmsUserRolesRepository->findAll();
         return $this->render('registration/user_registration.html.twig', [
             'registrationForm' => $form->createView(),
-            'roles' =>$userRoles,
-            'client'=> $client,
-            'mode' =>$mode
+            'roles' => $userRoles,
+            'client' => $client,
+            'mode' => $mode
         ]);
     }
 
