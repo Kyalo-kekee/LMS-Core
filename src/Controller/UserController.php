@@ -18,7 +18,7 @@ class UserController extends AbstractController
     }
 
     #[Route('employee-header', name: 'app_employee_header')]
-    public  function EmployeeHeader(MshuleUserRepository $repository)
+    public  function EmployeeHeader(MshuleUserRepository $repository): Response
     {
         return $this->render('user/index.html.twig', [
             'controller_name' => 'UserController',
