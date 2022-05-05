@@ -26,12 +26,19 @@
                 <tr>
                     <td>{{ employee.Salutation }} {{ employee.FirstName }} {{ employee.LastName }}</td>
                     <td>{{ employee.Email }}</td>
-                    <td>{{ employee.Designation }}</td>
+                    <td>
+                    {% if employee.Designation is null %}
+                    {{employee.roles[0]}}
+                    {% else %}
+                    {{ employee.Designation }}
+                    {% endif %}
+                    </td>
                     <td>{{ employee.IsEmployee }}</td>
                     <td>{{ employee.IsVerified }}</td>
                     <td>
-                        <a>edit</a>
-                        <a>delete</a>
+                        <a href='{{path('app_register',{'client':employee.roles[0], 'mode':'edit', 'user_id':employee.Id})}}'>
+                        <img src="{{ asset('enterprise/edit_2.png') }}">
+                        </a>
                     </td>
                 </tr>
                 {% endfor %}

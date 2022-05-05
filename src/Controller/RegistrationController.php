@@ -29,7 +29,7 @@ class RegistrationController extends AbstractController
         $this->emailVerifier = $emailVerifier;
     }
 
-    #[Route('/register/{client}', name: 'app_register')]
+    #[Route('/register/{client}/{mode}/{user_id}', name: 'app_register')]
     public function register(
         Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
@@ -37,10 +37,17 @@ class RegistrationController extends AbstractController
         UserServerAuthenticator $authenticator,
         EntityManagerInterface $entityManager,
         LmsUserRolesRepository $lmsUserRolesRepository,
-        $client
+        MshuleUserRepository $mshuleUserRepository,
+        $client,
+        $mode = 'new',
+        $user_id = null 
     ): Response
     {
-        $user = new MshuleUser();
+
+        $user = match($mode){
+            'new' => new MshuleUser(),
+            'edit' => $mshuleUserRepository ->find($user_id)
+        };
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -48,14 +55,18 @@ class RegistrationController extends AbstractController
 
             $user->setSalutation($form->get('Salutation')->getData());
             $user->setFirstName($form->get('FirstName')->getData());
+
+            if ($client === 'ROLE_ADMIN'){
+                $user  ->setDesignation('ADMINISTRATOR');
+            }
             if($client === 'ROLE_STUDENT')
             {
                 $user ->setClassId($form->get('ClassId')->getData());
                 $user ->setStudentId($form->get('StudentId')->getData());
             }
-            if($client === 'ROLE_LECTURE')
+            if($client === 'ROLE_LECTURE' )
             {
-                $user->setDesignation($form->get('Designation')->getData());
+                $user->setDesignation('LECTURER');
                 $user->setEmployeeNumber($form->get('EmployeeNumber')->getData());
                 $user->setIsEmployee($form->get('IsEmployee')->getData());
             }
@@ -85,14 +96,21 @@ class RegistrationController extends AbstractController
                     ->subject('Please Confirm your Email')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
-            $this ->addFlash('success',"Registration Success, This user can now access parts of the system");
+
+            if($mode == 'new'){
+                $this ->addFlash('success',"Registration Success, This user can now access parts of the system");
+
+            }else{
+                $this->addFlash('success', 'user updated');
+            }
         }
         /*get user roles*/
         $userRoles = $lmsUserRolesRepository ->findAll();
         return $this->render('registration/user_registration.html.twig', [
             'registrationForm' => $form->createView(),
             'roles' =>$userRoles,
-            'client'=> $client
+            'client'=> $client,
+            'mode' =>$mode
         ]);
     }
 
